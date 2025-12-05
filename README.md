@@ -44,7 +44,6 @@ utsms-daemon_1.1_amd64.deb
 2. Install the package
 sudo dpkg -i utsms-daemon_1.1_amd64.deb
 
-
 The installer will:
 
 Create /etc/utsms-daemon.env
@@ -76,6 +75,47 @@ SMS_IN_DIR=/var/spool/sms/incoming
 Restart service after changes:
 
 sudo systemctl restart utsms-daemon
+
+🛠 Configure smsd.conf
+
+Edit:
+
+sudo nano /etc/smsd.conf
+
+Example:
+
+devices = GSM1
+outgoing = /var/spool/sms/outgoing
+checked = /var/spool/sms/checked
+incoming = /var/spool/sms/incoming
+logfile = /var/log/smstools/smsd.log
+infofile = /var/run/smstools/smsd.working
+pidfile = /var/run/smstools/smsd.pid
+failed = /var/spool/sms/failed
+sent = /var/spool/sms/sent
+stats = /var/log/smstools/smsd_stats
+loglevel = 4
+receive_before_send = no
+autosplit = 3
+store_received_pdu = 1
+date_filename = 2
+date_filename_format = %Y%m%d-%H%M%S
+incoming_utf8 = yes
+decode_unicode_text = yes
+
+[GSM1]
+init = AT+CNMI=1,2,2,1,1
+device = /dev/ttyUSB2
+incoming = yes
+baudrate = 115200
+report = yes
+memory_start = 0
+primary_memory = SM
+secondary_memory = ME
+
+Restart service after changes:
+
+sudo systemctl restart smstools
 
 🚀 Run & Manage Service
 
