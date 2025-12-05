@@ -1,0 +1,6 @@
+#!/bin/bash
+
+systemctl stop utsms-daemon || true
+systemctl disable utsms-daemon || true
+
+exit 0

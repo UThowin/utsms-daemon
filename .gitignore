@@ -1,0 +1,19 @@
+# compiled binaries
+utsms-daemon
+*.exe
+*.out
+
+# deb packages
+utsms-daemon_*.deb
+
+# environment files
+*.env
+*.env.*
+/etc/utsms-daemon.env
+
+# build artifacts
+debian/usr/bin/utsms-daemon
+debian/etc/utsms-daemon.env
+
+# system folders accidentally added
+opt/
