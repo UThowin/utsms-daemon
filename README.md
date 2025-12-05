@@ -60,9 +60,8 @@ Edit:
 
 sudo nano /etc/utsms-daemon.env
 
-
-Example:
-
+### Sample .env file
+```ini
 SMS_DB_USER=smsuser
 SMS_DB_PASS=changeme
 SMS_DB_HOST=127.0.0.1
@@ -70,7 +69,7 @@ SMS_DB_PORT=3306
 SMS_DB_NAME=smsdb
 SMS_OUT_DIR=/var/spool/sms/outgoing
 SMS_IN_DIR=/var/spool/sms/incoming
-
+```
 
 Restart service after changes:
 
@@ -82,8 +81,9 @@ Edit:
 
 sudo nano /etc/smsd.conf
 
-Example:
+### Sample smsd.conf
 
+```ini
 devices = GSM1
 outgoing = /var/spool/sms/outgoing
 checked = /var/spool/sms/checked
@@ -112,7 +112,7 @@ report = yes
 memory_start = 0
 primary_memory = SM
 secondary_memory = ME
-
+```
 Restart service after changes:
 
 sudo systemctl restart smstools
