@@ -135,24 +135,31 @@ View logs:
 sudo journalctl -u utsms-daemon -f
 
 📁 Project Structure
-utsms-daemon/
+📁 utsms-daemon/
 │
-├── main.go               # Go source code
-├── go.mod
-├── go.sum
+├── main.go                 # Go source code
+├── go.mod                  # Go module definition
+├── go.sum                  # Module checksums
 │
-├── debian/
+├── debian/                 # Debian package build folder
 │   ├── DEBIAN/
-│   │   ├── control      # Package metadata
-│   │   ├── postinst     # Auto install service
-│   │   └── prerm        # Auto remove service
+│   │   ├── control         # Package metadata
+│   │   ├── postinst        # Run after install (service setup)
+│   │   └── prerm           # Run before uninstall
 │   │
-│   ├── usr/bin/         # Install location for binary
-│   ├── etc/             # Template .env
-│   └── lib/systemd/system/
-│       └── utsms-daemon.service
+│   ├── usr/
+│   │   └── bin/            # Binary install destination
+│   │
+│   ├── etc/                # Template configuration files
+│   │   └── smsd.conf.sample
+│   │
+│   └── lib/
+│       └── systemd/
+│           └── system/
+│               └── utsms-daemon.service
 │
-└── build.sh             # Automated .deb builder
+└── build.sh                # Automated .deb builder
+
 
 💡 Development
 
