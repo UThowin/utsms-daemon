@@ -11,10 +11,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: '1.22'
 
@@ -23,19 +23,21 @@ jobs:
 
       - name: Prepare Debian package tree
         run: |
-          mkdir -p build/debian
-          cp -r debian build/debian/
-          cp utsms-daemon build/debian/usr/bin/
+          mkdir -p pkg
+          cp -r debian/* pkg/
+          mkdir -p pkg/usr/bin
+          cp utsms-daemon pkg/usr/bin/
 
       - name: Build .deb package
         run: |
           VERSION=${GITHUB_REF#refs/tags/}
-          dpkg-deb --build build/debian utsms-daemon_${VERSION}_amd64.deb
-          echo "DEB_NAME=utsms-daemon_${VERSION}_amd64.deb" >> $GITHUB_ENV
+          DEB_NAME="utsms-daemon_${VERSION}_amd64.deb"
+          dpkg-deb --build pkg "$DEB_NAME"
+          echo "DEB_NAME=$DEB_NAME" >> $GITHUB_ENV
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         with:
-          files: utsms-daemon_${{ env.DEB_NAME }}
+          files: ${{ env.DEB_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
