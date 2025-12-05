@@ -134,31 +134,35 @@ View logs:
 
 sudo journalctl -u utsms-daemon -f
 
-📁 Project Structure
-📁 utsms-daemon/
-|
-+-- main.go
-+-- go.mod
-+-- go.sum
-|
-+-- debian/
-|   +-- DEBIAN/
-|   |   +-- control
-|   |   +-- postinst
-|   |   +-- prerm
-|   |
-|   +-- usr/
-|   |   +-- bin/
-|   |
-|   +-- etc/
-|   |   +-- smsd.conf.sample
-|   |
-|   +-- lib/
-|       +-- systemd/
-|           +-- system/
-|               +-- utsms-daemon.service
-|
-+-- build.sh
+### Project Structure
+
+<pre>
+utsms-daemon/
+│
+├── main.go
+├── go.mod
+├── go.sum
+│
+├── debian/
+│   ├── DEBIAN/
+│   │   ├── control
+│   │   ├── postinst
+│   │   └── prerm
+│   │
+│   ├── usr/
+│   │   └── bin/
+│   │
+│   ├── etc/
+│   │   └── smsd.conf.sample
+│   │
+│   └── lib/
+│       └── systemd/
+│           └── system/
+│               └── utsms-daemon.service
+│
+└── build.sh
+</pre>
+
 
 
 💡 Development
