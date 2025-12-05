@@ -1,43 +1,45 @@
-name: Build & Release UTSMS Daemon
+name: Publish APT Repo
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
-          go-version: '1.22'
+          fetch-depth: 0
 
-      - name: Build Go binary
-        run: go build -o utsms-daemon main.go
-
-      - name: Prepare Debian package tree
+      - name: Checkout gh-pages branch
         run: |
-          mkdir -p pkg
-          cp -r debian/* pkg/
-          mkdir -p pkg/usr/bin
-          cp utsms-daemon pkg/usr/bin/
+          git fetch origin gh-pages
+          git checkout gh-pages
 
-      - name: Build .deb package
-        run: |
-          VERSION=${GITHUB_REF#refs/tags/}
-          DEB_NAME="utsms-daemon_${VERSION}_amd64.deb"
-          dpkg-deb --build pkg "$DEB_NAME"
-          echo "DEB_NAME=$DEB_NAME" >> $GITHUB_ENV
-
-      - name: Upload Release Asset
-        uses: softprops/action-gh-release@v1
+      - name: Copy .deb from release
+        uses: robinraju/release-downloader@v1
         with:
-          files: ${{ env.DEB_NAME }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.event.release.tag_name }}
+          fileName: "*.deb"
+
+      - name: Move package to repo
+        run: |
+          mkdir -p debian/dists/stable/main/binary-amd64
+          mv *.deb debian/dists/stable/main/binary-amd64/
+
+      - name: Generate Packages.gz
+        run: |
+          cd debian/dists/stable/main/binary-amd64
+          dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+          dpkg-scanpackages . /dev/null > Packages
+
+      - name: Commit and push
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add .
+          git commit -m "Update repo for ${{ github.event.release.tag_name }}"
+          git push origin gh-pages
