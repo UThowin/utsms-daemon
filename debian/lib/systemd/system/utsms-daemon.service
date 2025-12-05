@@ -1,0 +1,14 @@
+[Unit]
+Description=UT SMS DB -> smstools bridge
+After=network.target mariadb.service mysql.service
+
+[Service]
+User=smsd
+Group=smsd
+WorkingDirectory=/opt/utsms-daemon
+ExecStart=/usr/bin/utsms-daemon
+EnvironmentFile=/etc/utsms-daemon.env
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

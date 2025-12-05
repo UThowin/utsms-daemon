@@ -1,0 +1,43 @@
+name: Build & Release UTSMS Daemon
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Build Go binary
+        run: go build -o utsms-daemon main.go
+
+      - name: Prepare Debian package tree
+        run: |
+          mkdir -p pkg
+          cp -r debian/* pkg/
+          mkdir -p pkg/usr/bin
+          cp utsms-daemon pkg/usr/bin/
+
+      - name: Build .deb package
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          DEB_NAME="utsms-daemon_${VERSION}_amd64.deb"
+          dpkg-deb --build pkg "$DEB_NAME"
+          echo "DEB_NAME=$DEB_NAME" >> $GITHUB_ENV
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.DEB_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

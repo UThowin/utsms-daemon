@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+# Create service user if missing
+if ! id "smsd" >/dev/null 2>&1; then
+    useradd -r -s /usr/sbin/nologin smsd
+fi
+
+# Set permissions for env file
+chmod 600 /etc/utsms-daemon.env
+chown smsd:smsd /etc/utsms-daemon.env
+
+# Create working directory if missing
+mkdir -p /opt/utsms-daemon
+chown smsd:smsd /opt/utsms-daemon
+chmod 750 /opt/utsms-daemon
+
+# Reload systemd and enable service
+systemctl daemon-reload
+systemctl enable utsms-daemon
+systemctl restart utsms-daemon
+
+exit 0

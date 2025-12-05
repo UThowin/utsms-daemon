@@ -1,0 +1,9 @@
+Package: utsms-daemon
+Version: 1.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: U Thowin <thurein@techpro.pro>
+Depends: libc6, mariadb-client
+Description: Go SMS Daemon bridge for SMSTools3
+ A small daemon written in Go that bridges MySQL and SMSTools3.
